@@ -1,5 +1,4 @@
 import math
-
 import numpy as np
 import matplotlib.pyplot as mpl
 
@@ -9,7 +8,8 @@ def pythag_for_hyp(a, b):
 
 
 class Trajectory:
-    def __init__(self):
+    def __init__(self, value):
+        self.__ID = value
         self.__u = 0
         self.__angle = 0
         self.__total_time = 0
@@ -44,7 +44,7 @@ class Trajectory:
     def calculate_final_speed(self):
         return pythag_for_hyp(self.calculate_horizontal_speed(), self.calculate_vertical_speed(self.__total_time))
 
-    def plot_trajectory(self, number_points=100):
+    def plot_trajectory_list(self, ax, number_points=100):
         horizontal_list = []
         vertical_list = []
         times = np.linspace(0, self.__total_time, number_points)
@@ -57,17 +57,38 @@ class Trajectory:
                 horizontal_list.append(self.calculate_horizontal_distance(self.calculate_total_time()))
                 vertical_list.append(self.calculate_vertical_distance(self.calculate_total_time()))
                 break
-        mpl.plot(horizontal_list, vertical_list)
-        mpl.xlabel("Horizontal Distance")
-        mpl.ylabel("Vertical Distance")
-        mpl.title("TRAJECTORY")
-        mpl.grid(True)
-        mpl.axis('equal')
-        mpl.show()
+        ax.plot(horizontal_list, vertical_list, label=f"Trajectory = {self.__ID + 1}")
 
 
-Eg1 = Trajectory()
-Eg1.set_values()
-print(f"Time taken: {Eg1.get_values()[2]} seconds")
-Eg1.plot_trajectory()
+def plot_trajectories(trajectories):
+    fig, ax = mpl.subplots()
+    for i in trajectories:
+        i.plot_trajectory_list(ax)
+    ax.set_xlabel("Horizontal Distance")
+    ax.set_ylabel("Vertical Distance")
+    ax.set_title("TRAJECTORY")
+    ax.legend()
+    mpl.grid(True)
+    mpl.axis('equal')
+    mpl.show()
+
+
+def main():
+    traj_list = []
+    go = True
+    count = 0
+    while go:
+        traj_list.append(Trajectory(count))
+        traj_list[count].set_values()
+        plot_trajectories(traj_list)
+        user_input = input("Would you like to enter another graph?(y/n): ").upper()
+        if user_input == "Y":
+            pass
+        else:
+            go = False
+            print("Goodbye!")
+        count += 1
+
+
+main()
 
