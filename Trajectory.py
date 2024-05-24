@@ -161,12 +161,12 @@ class Menu:
                     print("Enter a valid option.")
                 else:
                     go = True
-        if user_input == 0:
-            self.clear_graph()
-        elif user_input == -1:
-            pass
-        else:
-            self.__trajectory_list.remove(self.__trajectory_list[user_input - 1])
+            if user_input == 0:
+                self.clear_graph()
+            elif user_input == -1:
+                pass
+            else:
+                self.__trajectory_list.remove(self.__trajectory_list[user_input - 1])
 
 
 Eg1 = Menu()
