@@ -60,35 +60,114 @@ class Trajectory:
         ax.plot(horizontal_list, vertical_list, label=f"Trajectory = {self.__ID + 1}")
 
 
-def plot_trajectories(trajectories):
-    fig, ax = mpl.subplots()
-    for i in trajectories:
-        i.plot_trajectory_list(ax)
-    ax.set_xlabel("Horizontal Distance")
-    ax.set_ylabel("Vertical Distance")
-    ax.set_title("TRAJECTORY")
-    ax.legend()
-    mpl.grid(True)
-    mpl.axis('equal')
-    mpl.show()
+class Menu:
+    def __init__(self):
+        self.__trajectory_list = []
 
+    def plot_trajectories(self):
+        if len(self.__trajectory_list) == 0:
+            print()
+            print()
+            print("There are no trajectories in memory.")
+        else:
+            fig, ax = mpl.subplots()
+            for i in self.__trajectory_list:
+                i.plot_trajectory_list(ax)
+            ax.set_xlabel("Horizontal Distance")
+            ax.set_ylabel("Vertical Distance")
+            ax.set_title("TRAJECTORY")
+            ax.legend()
+            mpl.grid(True)
+            mpl.axis('equal')
+            mpl.show()
 
-def main():
-    traj_list = []
-    go = True
-    count = 0
-    while go:
-        traj_list.append(Trajectory(count))
-        traj_list[count].set_values()
-        plot_trajectories(traj_list)
-        user_input = input("Would you like to enter another graph?(y/n): ").upper()
-        if user_input == "Y":
+    def clear_graph(self):
+        self.__trajectory_list = []
+
+    def main_ui(self):
+        resume = True
+        while resume:
+            go = False
+            print("-----MAIN MENU-----")
+            print("1: Enter a new trajectory.")
+            print("2. Look at previous trajectories in memory.")
+            print("3. Plot Trajectories.")
+            print("4. Remove Trajectories from memory.")
+            while not go:
+                user_input = input("Enter an option or 5 to exit: ")
+                try:
+                    user_input = int(user_input)
+                    if user_input < 0 or user_input > 5:
+                        print("Enter a valid option.")
+                    else:
+                        go = True
+                except ValueError:
+                    print("Enter a valid option.")
+            if user_input == 1:
+                self.enter_new_trajectory()
+                print()
+                print()
+            elif user_input == 2:
+                self.look_at_trajectories()
+                print()
+                print()
+            elif user_input == 3:
+                self.plot_trajectories()
+                print()
+                print()
+            elif user_input == 4:
+                self.remove_trajectories()
+                print()
+                print()
+            else:
+                resume = False
+                print("Goodbye!")
+
+    def enter_new_trajectory(self):
+        print()
+        new_trajectory = Trajectory(len(self.__trajectory_list))
+        new_trajectory.set_values()
+        self.__trajectory_list.append(new_trajectory)
+
+    def look_at_trajectories(self):
+        print()
+        print()
+        if len(self.__trajectory_list) == 0:
+            print("There are no trajectories in memory.")
+        else:
+            for trajectory in self.__trajectory_list:
+                print(f"Trajectory {self.__trajectory_list.index(trajectory) + 1}:")
+                print(f"Initial Speed: {trajectory.get_values()[0]}m/s")
+                print(f"Angle of Elevation: {math.degrees(trajectory.get_values()[1])} degrees")
+                print(f"Time of Flight: {trajectory.get_values()[2]}s")
+                print()
+
+    def remove_trajectories(self):
+        go = False
+        self.look_at_trajectories()
+        if len(self.__trajectory_list) == 0:
             pass
         else:
-            go = False
-            print("Goodbye!")
-        count += 1
+            while not go:
+                user_input = input(f"Enter the number of the trajectory you want to remove "
+                                   f"(1, {len(self.__trajectory_list)}) or 0 to remove all "
+                                   f"or -1 to return to main menu: ")
+                try:
+                    user_input = int(user_input)
+                except ValueError:
+                    print("Enter a valid option.")
+                    break
+                if user_input < -1 or user_input > len(self.__trajectory_list):
+                    print("Enter a valid option.")
+                else:
+                    go = True
+        if user_input == 0:
+            self.clear_graph()
+        elif user_input == -1:
+            pass
+        else:
+            self.__trajectory_list.remove(self.__trajectory_list[user_input - 1])
 
 
-main()
-
+Eg1 = Menu()
+Eg1.main_ui()
