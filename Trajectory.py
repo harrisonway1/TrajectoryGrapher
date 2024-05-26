@@ -23,7 +23,7 @@ class Trajectory:
         return (2 * self.__u * math.sin(self.__angle)) / 9.8
 
     def get_values(self):
-        return [self.__u, self.__angle, self.__total_time]
+        return [self.__u, self.__angle, self.__total_time, self.calculate_horizontal_distance(self.__total_time)]
 
     def calculate_horizontal_speed(self):
         return self.__u * math.cos(self.__angle)
@@ -138,8 +138,9 @@ class Menu:
             for trajectory in self.__trajectory_list:
                 print(f"Trajectory {self.__trajectory_list.index(trajectory) + 1}:")
                 print(f"Initial Speed: {trajectory.get_values()[0]}m/s")
-                print(f"Angle of Elevation: {math.degrees(trajectory.get_values()[1])} degrees")
-                print(f"Time of Flight: {trajectory.get_values()[2]}s")
+                print(f"Angle of Elevation: {round(math.degrees(trajectory.get_values()[1]), 3)} degrees")
+                print(f"Time of Flight: {round(trajectory.get_values()[2], 3)}s")
+                print(f"Horizontal Distance Traveled: {round(trajectory.get_values()[3], 3)}m")
                 print()
 
     def remove_trajectories(self):
